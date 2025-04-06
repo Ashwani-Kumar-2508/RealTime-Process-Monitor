@@ -11,7 +11,7 @@ A Python-based real-time system monitoring tool that displays CPU, memory, disk 
 
 ## 📸 Screenshot
 
-*(Add a screenshot of the app running here if available)*
+![RealTime Process Monitor GUI](screenshot.png)
 
 ## 🧰 Requirements
 
