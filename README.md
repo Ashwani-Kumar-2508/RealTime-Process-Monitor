@@ -17,10 +17,10 @@ OpsPulse is a real-time monitoring dashboard for OS labs and operational demos. 
 2. Run the backend:
    ```powershell
    cd backend
-   uvicorn main:app --reload --host 127.0.0.1 --port 5000
+   uvicorn main:app --reload --host 127.0.0.1 --port 8000
    ```
 3. Open in browser:
-   - `http://127.0.0.1:5000/`
+   - `http://127.0.0.1:8000/`
 
 ## Structure
 - `backend/`: FastAPI server and WebSocket telemetry
