@@ -2,6 +2,7 @@
     cpuChart: null,
     memChart: null,
     searchQuery: "",
+    isHistoryLoaded: false,
 };
 
 function formatPercent(value) {
@@ -110,6 +111,35 @@ function updateMetrics(stats) {
     }
 }
 
+function updateIncidents(incidents) {
+    const list = document.getElementById("incidents-list");
+    if (!list) return;
+
+    if (!incidents || incidents.length === 0) {
+        list.innerHTML = `<div class="status"><span class="status__value">No active incidents.</span></div>`;
+        return;
+    }
+
+    list.innerHTML = "";
+    incidents.slice().reverse().forEach(inc => {
+        const color = inc.level === "CRITICAL" ? "var(--danger)" : (inc.level === "WARNING" ? "var(--warning)" : "var(--accent)");
+        const item = document.createElement("div");
+        item.className = "status";
+        item.style.flexDirection = "column";
+        item.style.alignItems = "flex-start";
+        item.style.gap = "4px";
+        item.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="width: 8px; height: 8px; border-radius: 50%; background: ${color};"></span>
+                <span class="status__title">${inc.level}</span>
+                <span style="font-size: 0.7rem; color: var(--muted);">${new Date(inc.timestamp).toLocaleTimeString()}</span>
+            </div>
+            <span class="status__value" style="font-size: 0.95rem; opacity: 0.9;">${inc.message}</span>
+        `;
+        list.appendChild(item);
+    });
+}
+
 function updateProcessTable(processes) {
     const table = document.getElementById("processTable");
     if (!table) return;
@@ -117,8 +147,8 @@ function updateProcessTable(processes) {
     let filtered = processes;
     if (dashboardState.searchQuery) {
         const query = dashboardState.searchQuery.toLowerCase();
-        filtered = processes.filter(p => 
-            p.name.toLowerCase().includes(query) || 
+        filtered = processes.filter(p =>
+            p.name.toLowerCase().includes(query) ||
             p.pid.toString().includes(query)
         );
     }
@@ -188,14 +218,37 @@ function connectWebSocket() {
             console.warn("Invalid telemetry payload", error);
             return;
         }
+
+        // Initialize history once
+        if (!dashboardState.isHistoryLoaded && data.history && data.history.length > 0) {
+            if (dashboardState.cpuChart && dashboardState.memChart) {
+                const maxHistory = 30; // Match chart max points
+                const history = data.history.slice(-maxHistory);
+
+                dashboardState.cpuChart.data.labels = history.map(h => new Date(h.timestamp).toLocaleTimeString());
+                dashboardState.cpuChart.data.datasets[0].data = history.map(h => h.cpu);
+
+                dashboardState.memChart.data.labels = history.map(h => new Date(h.timestamp).toLocaleTimeString());
+                dashboardState.memChart.data.datasets[0].data = history.map(h => h.memory);
+
+                dashboardState.cpuChart.update("none");
+                dashboardState.memChart.update("none");
+                dashboardState.isHistoryLoaded = true;
+            }
+        }
+
         updateMetrics(data);
-        pushChartPoint(dashboardState.cpuChart, data.cpu);
-        pushChartPoint(dashboardState.memChart, data.memory);
+        if (dashboardState.isHistoryLoaded) {
+            pushChartPoint(dashboardState.cpuChart, data.cpu);
+            pushChartPoint(dashboardState.memChart, data.memory);
+        }
         updateProcessTable(data.processes);
+        updateIncidents(data.incidents);
     });
 
     socket.addEventListener("close", () => {
         console.warn("WebSocket disconnected. Reconnecting...");
+        dashboardState.isHistoryLoaded = false;
         const badge = document.querySelector(".badge");
         if (badge) {
             badge.textContent = "Disconnected - Reconnecting...";

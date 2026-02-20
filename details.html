@@ -44,58 +44,86 @@
 
             <div class="grid">
                 <div class="card">
-                    <h3>CPU Breakdown</h3>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)"
+                            stroke-width="2">
+                            <rect x="4" y="4" width="16" height="16" rx="2" />
+                            <path d="M9 9h6v6H9zM15 2v2M9 2v2M15 20v2M9 20v2M20 15h2M20 9h2M2 15h2M2 9h2" />
+                        </svg>
+                        <h3 style="margin: 0;">CPU Breakdown</h3>
+                    </div>
                     <p class="hero__subtitle">Per-core utilization, frequency, and logical processor count.</p>
                     <div class="status-grid">
                         <div class="status">
-                            <div class="status__title">Logical Cores</div>
-                            <div class="status__value" data-sys-cpu-cores>--</div>
+                            <span class="status__title">Logical Cores</span>
+                            <span class="status__value" data-sys-cpu-cores>--</span>
                         </div>
                         <div class="status">
-                            <div class="status__title">Frequency</div>
-                            <div class="status__value" data-sys-cpu-freq>--</div>
+                            <span class="status__title">Frequency</span>
+                            <span class="status__value" data-sys-cpu-freq>--</span>
                         </div>
                     </div>
                 </div>
                 <div class="card">
-                    <h3>Memory Allocation</h3>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--info)"
+                            stroke-width="2">
+                            <path d="M6 19v2M10 19v2M14 19v2M18 19v2M8 11V9a4 4 0 118 0v2M6 15h12v4H6v-4z" />
+                        </svg>
+                        <h3 style="margin: 0;">Memory Allocation</h3>
+                    </div>
                     <p class="hero__subtitle">Track active, cached, and available memory in real time.</p>
                     <div class="status-grid">
                         <div class="status">
-                            <div class="status__title">Total Capacity</div>
-                            <div class="status__value" data-sys-mem-total>--</div>
+                            <span class="status__title">Total Capacity</span>
+                            <span class="status__value" data-sys-mem-total>--</span>
                         </div>
                         <div class="status">
-                            <div class="status__title">Usage</div>
-                            <div class="status__value" id="memoryValue">--</div>
+                            <span class="status__title">Usage Level</span>
+                            <span class="status__value" id="memoryValue">--</span>
                         </div>
                     </div>
                 </div>
                 <div class="card">
-                    <h3>Disk Health</h3>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--warning)"
+                            stroke-width="2">
+                            <path
+                                d="M22 12H2M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z" />
+                        </svg>
+                        <h3 style="margin: 0;">Disk Health</h3>
+                    </div>
                     <p class="hero__subtitle">Storage capacity, throughput, and disk pressure indicators.</p>
                     <div class="status-grid">
                         <div class="status">
-                            <div class="status__title">Total Volume</div>
-                            <div class="status__value" data-sys-disk-total>--</div>
+                            <span class="status__title">Total Volume</span>
+                            <span class="status__value" data-sys-disk-total>--</span>
                         </div>
                         <div class="status">
-                            <div class="status__title">Available</div>
-                            <div class="status__value" data-sys-disk-free>--</div>
+                            <span class="status__title">Available Space</span>
+                            <span class="status__value" data-sys-disk-free>--</span>
                         </div>
                     </div>
                 </div>
                 <div class="card">
-                    <h3>OS Context</h3>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--text)"
+                            stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
+                        <h3 style="margin: 0;">OS Context</h3>
+                    </div>
                     <p class="hero__subtitle">System environment and network throughput diagnostics.</p>
                     <div class="status-grid">
                         <div class="status">
-                            <div class="status__title">OS Type</div>
-                            <div class="status__value" data-sys-os style="text-transform: capitalize;">--</div>
+                            <span class="status__title">OS Platform</span>
+                            <span class="status__value" data-sys-os style="text-transform: capitalize;">--</span>
                         </div>
                         <div class="status">
-                            <div class="status__title">Network</div>
-                            <div class="status__value" id="networkValue" style="font-size: 0.9rem;">--</div>
+                            <span class="status__title">Net Activity</span>
+                            <span class="status__value" id="networkValue" style="font-size: 0.9rem;">--</span>
                         </div>
                     </div>
                 </div>

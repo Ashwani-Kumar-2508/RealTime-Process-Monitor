@@ -41,6 +41,15 @@ telemetry_cache = {
     "updated_at": None,
 }
 
+# History buffer for charts (last 60 seconds)
+telemetry_history = []
+MAX_HISTORY = 60
+
+# Incident log
+incidents = [
+    {"timestamp": datetime.now(timezone.utc).isoformat(), "level": "INFO", "message": "OpsPulse Monitoring Started"}
+]
+
 
 class ContactMessage(BaseModel):
     name: str
@@ -55,45 +64,94 @@ def read_page(filename: str) -> HTMLResponse:
     return HTMLResponse(content=page_path.read_text(encoding="utf-8"), status_code=200)
 
 
-async def telemetry_loop() -> None:
+async def telemetry_loop():
+    global telemetry_history
     while True:
-        cpu_percent = psutil.cpu_percent(interval=None)
-        memory = psutil.virtual_memory()
-        system_drive = os.getenv("SYSTEMDRIVE")
-        disk_root = f"{system_drive}\\" if system_drive else "/"
-        if not Path(disk_root).exists():
-            disk_root = "/"
-        disk = psutil.disk_usage(disk_root)
-        net = psutil.net_io_counters()
+        try:
+            cpu = psutil.cpu_percent(interval=None)
+            mem = psutil.virtual_memory()
+            disk = psutil.disk_usage("/")
+            net = psutil.net_io_counters()
 
-        processes = []
-        for p in psutil.process_iter(["pid", "name", "cpu_percent", "memory_percent"]):
-            try:
-                info = p.info
-                processes.append({
-                    "pid": info.get("pid"),
-                    "name": info.get("name") or "unknown",
-                    "cpu_percent": info.get("cpu_percent") or 0.0,
-                    "memory_percent": info.get("memory_percent") or 0.0,
-                })
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                continue
+            # Process list
+            processes = []
+            for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+                try:
+                    pinfo = proc.info
+                    processes.append({
+                        "pid": pinfo["pid"],
+                        "name": pinfo["name"] or "unknown",
+                        "cpu_percent": pinfo["cpu_percent"] or 0.0,
+                        "memory_percent": pinfo["memory_percent"] or 0.0,
+                    })
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    continue
 
-        telemetry_cache.update({
-            "cpu": cpu_percent,
-            "memory": memory.percent,
-            "disk_percent": disk.percent,
-            "net_sent": net.bytes_sent,
-            "net_recv": net.bytes_recv,
-            "processes": sorted(processes, key=lambda item: item["cpu_percent"], reverse=True)[:20],
-            "system": {
-                **telemetry_cache["system"],
-                "disk_total": disk.total,
-                "disk_free": disk.free,
-            },
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-        })
+            # Update cache
+            updated_ts = datetime.now(timezone.utc).isoformat()
+            telemetry_cache.update({
+                "cpu": cpu,
+                "memory": mem.percent,
+                "disk_percent": disk.percent,
+                "net_sent": net.bytes_sent,
+                "net_recv": net.bytes_recv,
+                "processes": sorted(processes, key=lambda item: item["cpu_percent"], reverse=True)[:20],
+                "system": {
+                    **telemetry_cache["system"],
+                    "disk_total": disk.total,
+                    "disk_free": disk.free,
+                },
+                "updated_at": updated_ts,
+            })
 
+            # Update history
+            telemetry_history.append({
+                "cpu": cpu,
+                "memory": mem.percent,
+                "disk": disk.percent,
+                "timestamp": updated_ts
+            })
+            if len(telemetry_history) > MAX_HISTORY:
+                telemetry_history.pop(0)
+
+            # Detect incidents (with de-duplication)
+            if not hasattr(telemetry_loop, "active_alerts"):
+                telemetry_loop.active_alerts = set()
+
+            # CPU Alert
+            if cpu > 80:
+                if "cpu_high" not in telemetry_loop.active_alerts:
+                    incidents.append({"timestamp": updated_ts, "level": "WARNING", "message": f"High CPU Usage Detected: {cpu}%"})
+                    telemetry_loop.active_alerts.add("cpu_high")
+            elif cpu < 70 and "cpu_high" in telemetry_loop.active_alerts:
+                incidents.append({"timestamp": updated_ts, "level": "INFO", "message": f"CPU Usage Normalized: {cpu}%"})
+                telemetry_loop.active_alerts.remove("cpu_high")
+
+            # Memory Alert
+            if mem.percent > 90:
+                if "mem_high" not in telemetry_loop.active_alerts:
+                    incidents.append({"timestamp": updated_ts, "level": "CRITICAL", "message": f"Critical Memory Pressure: {mem.percent}%"})
+                    telemetry_loop.active_alerts.add("mem_high")
+            elif mem.percent < 80 and "mem_high" in telemetry_loop.active_alerts:
+                incidents.append({"timestamp": updated_ts, "level": "INFO", "message": f"Memory Pressure Resolved: {mem.percent}%"})
+                telemetry_loop.active_alerts.remove("mem_high")
+
+            # Disk Alert
+            if disk.percent > 90:
+                if "disk_high" not in telemetry_loop.active_alerts:
+                    incidents.append({"timestamp": updated_ts, "level": "WARNING", "message": f"Low Disk Space: {disk.percent}% used"})
+                    telemetry_loop.active_alerts.add("disk_high")
+            elif disk.percent < 85 and "disk_high" in telemetry_loop.active_alerts:
+                incidents.append({"timestamp": updated_ts, "level": "INFO", "message": f"Disk Space Stabilized: {disk.percent}% used"})
+                telemetry_loop.active_alerts.remove("disk_high")
+            
+            # Keep only last 15 incidents to allow for history
+            if len(incidents) > 15:
+                # Keep the first "Monitoring Started" message, remove the second one
+                incidents.pop(1)
+
+        except Exception as e:
+            logging.error(f"Error in telemetry loop: {e}")
         await asyncio.sleep(1)
 
 
@@ -171,6 +229,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 "net_recv": telemetry_cache["net_recv"],
                 "processes": telemetry_cache["processes"],
                 "system": telemetry_cache["system"],
+                "history": telemetry_history,
+                "incidents": incidents,
                 "updated_at": telemetry_cache.get("updated_at"),
             })
 

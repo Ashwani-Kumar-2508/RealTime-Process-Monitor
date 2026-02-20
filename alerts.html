@@ -63,18 +63,10 @@
                 </div>
                 <div class="card">
                     <h3>Recent Incidents</h3>
-                    <div class="status-grid">
+                    <div id="incidents-list" class="status-grid">
                         <div class="status">
-                            <div class="status__title">CPU Spike</div>
-                            <div class="status__value">Resolved</div>
-                        </div>
-                        <div class="status">
-                            <div class="status__title">Memory Pressure</div>
-                            <div class="status__value">Investigating</div>
-                        </div>
-                        <div class="status">
-                            <div class="status__title">Disk Saturation</div>
-                            <div class="status__value">Stable</div>
+                            <span class="status__title">Scanning...</span>
+                            <span class="status__value" style="font-size: 0.9rem;">Initializing monitor</span>
                         </div>
                     </div>
                 </div>
@@ -89,6 +81,7 @@
     </footer>
 
     <script src="/assets/app.js"></script>
+    <script src="/assets/dashboard.js"></script>
 </body>
 
 </html>
