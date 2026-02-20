@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpsPulse | About</title>
+    <meta name="description" content="About the OpsPulse monitoring platform.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Sora:wght@600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/assets/styles.css">
+</head>
+
+<body data-page="about">
+    <header class="header">
+        <div class="container header__inner">
+            <div class="brand">
+                <div class="brand__title">OpsPulse</div>
+                <div class="brand__tagline">Real-time process telemetry</div>
+            </div>
+            <button class="nav-toggle" data-nav-toggle>Menu</button>
+            <nav class="nav">
+                <a href="/" data-page="home">Home</a>
+                <a href="/dashboard" data-page="dashboard">Dashboard</a>
+                <a href="/processes" data-page="processes">Processes</a>
+                <a href="/details" data-page="details">System Details</a>
+                <a href="/alerts" data-page="alerts">Alerts</a>
+                <a href="/settings" data-page="settings">Settings</a>
+                <a href="/about" data-page="about">About</a>
+                <a href="/contact" data-page="contact">Contact</a>
+            </nav>
+            <button class="theme-toggle" data-theme-toggle>Toggle Theme</button>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container">
+            <h1 class="hero__title">About OpsPulse</h1>
+            <p class="hero__subtitle">OpsPulse is a lab-ready monitoring suite that turns raw OS telemetry into clear,
+                actionable insight.</p>
+
+            <div class="grid">
+                <div class="card">
+                    <h3>Why it exists</h3>
+                    <p class="hero__subtitle">Built for OS lab projects and real-world ops teams that need fast,
+                        reliable visibility into CPU, memory, disk, and process behavior without heavy tooling.</p>
+                </div>
+                <div class="card">
+                    <h3>What you get</h3>
+                    <p class="hero__subtitle">Real-time dashboards, live process control, clear status cards, and a
+                        clean UI that scales from classroom demos to production pilots.</p>
+                </div>
+                <div class="card">
+                    <h3>How it works</h3>
+                    <p class="hero__subtitle">FastAPI and WebSockets stream metrics every second; the UI renders charts
+                        and operational views instantly.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="grid">
+                    <div class="card">
+                        <h3>Core Principles</h3>
+                        <ul style="list-style: none; padding: 0; color: var(--muted); line-height: 1.8;">
+                            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)"
+                                    stroke-width="2.5" style="flex-shrink: 0; margin-top: 4px;">
+                                    <path d="M20 6L9 17l-5-5"></path>
+                                </svg>
+                                <span>Clarity over noise: show only what matters.</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)"
+                                    stroke-width="2.5" style="flex-shrink: 0; margin-top: 4px;">
+                                    <path d="M20 6L9 17l-5-5"></path>
+                                </svg>
+                                <span>Low latency: live updates without flicker.</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 10px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)"
+                                    stroke-width="2.5" style="flex-shrink: 0; margin-top: 4px;">
+                                    <path d="M20 6L9 17l-5-5"></path>
+                                </svg>
+                                <span>Control with safety: terminate processes responsibly.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Roadmap</h3>
+                        <ul style="list-style: none; padding: 0; color: var(--muted); line-height: 1.8;">
+                            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info)"
+                                    stroke-width="2.5" style="flex-shrink: 0; margin-top: 4px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4M12 8h.01"></path>
+                                </svg>
+                                <span>Alert persistence and incident history</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info)"
+                                    stroke-width="2.5" style="flex-shrink: 0; margin-top: 4px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4M12 8h.01"></path>
+                                </svg>
+                                <span>Role-based access and audit logs</span>
+                            </li>
+                            <li style="display: flex; align-items: flex-start; gap: 10px;">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--info)"
+                                    stroke-width="2.5" style="flex-shrink: 0; margin-top: 4px;">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M12 16v-4M12 8h.01"></path>
+                                </svg>
+                                <span>Exportable reports for lab evaluation</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            OpsPulse is designed to be extended for any lab or operational environment.
+        </div>
+    </footer>
+
+    <script src="/assets/app.js"></script>
+</body>
+
+</html>
